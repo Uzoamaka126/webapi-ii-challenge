@@ -38,9 +38,15 @@ router.get('/:id', (req, res) => {
 
 // Create a new post
 router.post('/', (req, res) => {
-    Blogs.insert(req.body)
-    .then(post => {
-        res.status(201).json(post);
+    const newPost = {
+        title: req.body.title,
+        contents: req.body.contents,
+        created_at: 'now',        
+    };
+    Blogs.insert(newPost)
+    .then(data => {
+        // console.log(data);
+            res.status(201).json(data);
     })
     .catch(err => {
         // log error to the database
