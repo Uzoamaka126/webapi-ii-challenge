@@ -57,6 +57,7 @@ router.post('/', (req, res) => {
     });
 });
 
+// Delete a selected post
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
     Blogs.remove(id)
@@ -79,6 +80,7 @@ router.delete('/:id', (req, res) => {
         })
 });
 
+// Edit a selected post
 router.put('/:id', (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -103,4 +105,48 @@ router.put('/:id', (req, res) => {
         });
 });
 
+// Post a new comment
+router.post('/:id/comments', (req, res) => {
+    // const newComment = {
+    //     title: req.body.title,
+    //     post_id: req.body.contents,
+    //     created_at: 'now',        
+    // };
+
+    Blogs.insertComment(req.body)
+        .then(data => {
+            console.log(data);
+            res.status(201).json({
+                message: 'New comment successfully added',
+                data
+            });
+        })
+        .catch(err => {
+            // log error to the database
+            console.log(err);
+            res.status(500).json({
+                message: 'An error occured when adding a new comment',
+            });
+        });
+});
+
+router.get('/:id/comments', (req, res) => {
+    const { id } = req.params;
+    Blogs.findCommentById(id)
+        .then(singleComment => {
+            if (singleComment.length > 0) {
+                res.status(200).json(singleComment);
+            } else {
+                res.status(404).json({
+                    message: 'Post not found'
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                message: 'Error retrieving comments',
+            });
+        });
+});
 module.exports = router;
