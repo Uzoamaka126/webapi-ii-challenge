@@ -57,4 +57,50 @@ router.post('/', (req, res) => {
     });
 });
 
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    Blogs.remove(id)
+        .then(count => {
+            if (count > 0) {
+                res.status(200).json({
+                    message: "The Post has been taken down!"
+                })
+            } else {
+                res.status(404).json({
+                    message: 'The Post could not be found'
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                message: 'Error remving the post',
+            })
+        })
+});
+
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+    Blogs.update(id, updates)
+        .then(blog => {
+            if (blog) {
+                res.status(200).json({
+                    message: 'Post has been successfully updated',
+                    blog
+                });
+            } else {
+                res.status(404).json({
+                    message: 'The Post could not be found'
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                message: 'Error updating the post'
+            });
+        });
+});
+
 module.exports = router;
