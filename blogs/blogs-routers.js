@@ -35,4 +35,20 @@ router.get('/:id', (req, res) => {
             });
         });
 })
+
+// Create a new post
+router.post('/', (req, res) => {
+    Blogs.insert(req.body)
+    .then(post => {
+        res.status(201).json(post);
+    })
+    .catch(err => {
+        // log error to the database
+        console.log(err);
+        res.status(500).json({
+            message: 'An error occured when adding a new post',
+        });
+    });
+});
+
 module.exports = router;
